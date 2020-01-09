@@ -1,0 +1,19 @@
+<!--pages/indexTimer/indexTimer.wxml-->
+<view class="container">
+  <view>
+    <view>番茄钟</view>
+  </view>
+  <view class="clock">
+    <view class="show-time">{{wxTimer}}</view>
+  </view>
+  <view class="clock-type">
+    <view class="type {{clockType == 'work' ? 'thisType' : ''}}"
+      bindtap="selectType" data-type="work">工作</view>
+    <view class="type {{clockType == 'rest' ? 'thisType' : ''}}"
+      bindtap="selectType" data-type="rest">休息</view>
+  </view>
+  <!-- 控制番茄钟的开始与暂停 -->
+  <view class="clock-state">
+    <view bindtap="controlClock">{{!state ? "开始": "停止"}}</view>
+  </view>
+</view>
