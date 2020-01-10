@@ -1,8 +1,5 @@
 <!--pages/indexTimer/indexTimer.wxml-->
 <view class="container">
-  <view>
-    <view>番茄钟</view>
-  </view>
   <view class="clock">
     <view class="show-time">{{wxTimer}}</view>
   </view>
@@ -14,6 +11,9 @@
   </view>
   <!-- 控制番茄钟的开始与暂停 -->
   <view class="clock-state">
-    <view bindtap="controlClock">{{!state ? "开始": "停止"}}</view>
+    <view wx:if="{{state == 0}}" bindtap="startClock">开始</view>
+    <view wx:if="{{state == 1}}" bindtap="pauseClock">暂停</view>
+    <view wx:if="{{state == 2}}" bindtap="continueClock">继续</view>
+    <view wx:if="{{state == 2}}" bindtap="stopClock">停止</view>
   </view>
 </view>

@@ -6,112 +6,103 @@ Page({
    * 页面的初始数据
    */
   data: {
-    state: false,  // 计时状态
-    clockType: 'work',  // 时钟类型
-    wxTimerList: {},  // 计时器列表
-    wxTimer: "25:00",  // 剩余时间
-    wxTimerSecond: "1500",  // 剩余秒数
+    // 计时状态
+    // 0:没有计时（开始） 1: 正在计时（暂停）
+    // 2:停止（继续、停止） 
+    state: 0,
+    clockType: 'work', // 时钟类型
+    wxTimer: "25:00", // 剩余时间
+    wxTimerSecond: "1500", // 剩余秒数
   },
   /**
    * 非页面数据
    */
-  workTimer: null,  // 番茄钟
-  totalTime: "00:25:00",  // 总时间
+  workTimer: null, // 番茄钟
+  totalTime: "00:25:00", // 总时间
+  // 不同工作类型对应的时间
+  workType: {
+    work: "00:25:00",
+    rest: "00:03:00",
+  },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    wx.getSystemInfo({
-      success: function (res) {
-        var windowWidth = res.windowWidth;
-        var windowHeight = res.windowHeight;
-        console.log(res);
-      },
-    })
+  onLoad: function(options) {
+
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+  onShow: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   },
 
-  /**
-   * 控制番茄钟的启动和停止
-   */
-  controlClock: function () {
-    if (!this.data.state) {
-      this.startWork();
-    } else {
-      this.stopWork();
-    }
-  },
   /**
    * 开始工作倒计时
    */
-  startWork: function () {
+  startClock: function() {
     var that = this;
-    if (this.data.clockType == 'work') {
-      this.totalTime = '00:25:00';
-    } else if (this.data.clockType == 'rest') {
-      this.totalTime = '00:05:00';
-    } else {
-      this.totalTime = '00:00:10';
-    }
+    this.totalTime = this.workType[this.data.clockType];
 
-    workTimer = new timer({
+    // 创建计时器
+    this.workTimer = new timer({
       beginTime: this.totalTime,
       name: "workTimer",
-      complete: function () {
+      callback: function(param1) {
         that.setData({
-          state: !that.data.state,
+          wxTimer: param1.substring(3),
+        });
+      },
+      complete: function() {
+        that.setData({
+          state: 0,
         });
         console.log("完成了");
-        
+
         // 振动四次
         let count = 0;
         let inter = setInterval(function() {
@@ -124,40 +115,53 @@ Page({
         }, 600);
       }
     });
-    // console.log(workTimer);
-    // console.log(this.data.wxTimerList);
+
     this.setData({
-      state: !this.data.state,
+      state: 1,
     });
-    workTimer.start(this);
+    this.workTimer.restart();  // 为了防止出错
+  },
+
+  /**
+   * 暂停计时器
+   */
+  pauseClock: function() {
+    this.workTimer.pause();
+    this.setData({
+      state: 2,
+    });
+  },
+
+  /**
+   * 继续计时器
+   */
+  continueClock: function() {
+    this.setData({
+      state: 1,
+    });
+    this.workTimer.start();
   },
 
   /**
    * 停止计时器
    */
-  stopWork: function () {
-    var that = this;
-    workTimer.stop();
+  stopClock: function() {
+    this.workTimer.stop();
     this.setData({
-      state: !this.data.state,
+      state: 0,
+      wxTimer: this.workType[this.data.clockType].substring(3),
     });
   },
 
   /**
    * 选择计时器类型
    */
-  selectType: function (event) {
+  selectType: function(event) {
     var workType = event.currentTarget.dataset.type;
-    if (workType == this.data.clockType || this.data.state) {
+    if (workType == this.data.clockType || this.data.state != 0) {
       return;
     }
-    if (workType == 'work') {
-      this.totalTime = '00:25:00';
-    } else if (workType == 'rest') {
-      this.totalTime = '00:05:00';
-    } else {
-      this.totalTime = '00:10:00';
-    }
+    this.totalTime = this.workType[workType];
     this.setData({
       clockType: workType,
       wxTimer: this.totalTime.substring(3),
