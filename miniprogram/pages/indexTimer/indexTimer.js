@@ -92,7 +92,13 @@ Page({
     this.workTimer = new timer({
       beginTime: this.totalTime,
       name: "workTimer",
-      callback: function(param1) {
+      callback: function(param1, param2) {
+        if (param2 < 0) {
+          that.setData({
+            wxTimer: "00:00",
+          });
+          return;
+        }
         that.setData({
           wxTimer: param1.substring(3),
         });
