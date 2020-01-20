@@ -29,7 +29,7 @@ timer.prototype = {
       that.remainTime = tmpTime.toString().substr(16, 8);
       var remainSecond =
         Math.round((tmpTime.getTime() - new Date("1970/01/01 00:00:00").getTime()) / 1000);
-      that.callback(that.remainTime, that.remainSecond);
+      that.callback(that.remainTime, remainSecond);
 
       //结束执行函数
       if (remainSecond <= 0) {
