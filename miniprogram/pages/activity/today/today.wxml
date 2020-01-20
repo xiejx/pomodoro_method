@@ -1,4 +1,50 @@
 <!--pages/activity/today/today.wxml-->
-<view>
-  今日待办
+<view class="container">
+  <!-- 今日待办标题，以及添加今日待办的内容 -->
+  <view class="title-container">
+    <text>今日待办</text>
+  </view>
+  <view class="input-container">
+    <input type="text" placeholder="输入待办事项" class="task-input" value="{{inputTask}}"
+      bindinput="inputTask"></input>
+    <view class="add-task-btn" bindtap="addTask">添加</view>
+  </view>
+
+  <view class="subtitle-container">
+    <text>未完成</text>
+  </view>
+  <!-- 加粗的横线 -->
+  <view class="border-line"></view>
+
+  <!-- 今日待办列表 -->
+  <view class="todo-task-container">
+    <view class="todo-task-item" wx:for="{{todoTask}}">
+      <view class="task-item">{{item}}</view>
+      <view class="complete-task" data-taskid="{{index}}" bindtap="compTask">完成</view>
+      <view class="delete-task" bindtap="deleteTask" data-taskid="{{index}}">删除</view>
+      <!-- 横线 -->
+      <view class="line"></view>
+    </view>
+  </view>
+
+  <view class="subtitle-container">
+    <text>已完成</text>
+  </view>
+  <!-- 加粗的横线 -->
+  <view class="border-line"></view>
+
+  <!-- 已完成列表 -->
+  <view class="comp-task-container">
+    <view class="comp-task-item" wx:for="{{fullfilTask}}">
+      <view class="task-item">{{item}}</view>
+      <view class="uncomplete-task" data-taskid="{{index}}" bindtap="uncompTask">未完成</view>
+      <!-- 横线 -->
+      <view class="line"></view>
+    </view>
+  </view>
+
+  <!-- 计划外紧急 -->
+  <!-- <view class="title-container">
+    <text>计划外紧急</text>
+  </view> -->
 </view>
